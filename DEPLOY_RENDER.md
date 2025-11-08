@@ -72,7 +72,7 @@ If you prefer to configure manually:
    - **Branch**: main
    - **Build Command**: 
      ```
-     npm install && npm run build && npm run setup:all
+     npm install --legacy-peer-deps && npm run build && npm run setup:all
      ```
    - **Start Command**: 
      ```
@@ -137,9 +137,10 @@ Or create an empty index in the Pinecone dashboard and let the deployment popula
 
 If the build fails, check the Render logs for errors. Common issues:
 
-1. **Missing environment variables** - Make sure all required env vars are set
-2. **Pinecone connection fails** - Verify your Pinecone API key and index name
-3. **TypeScript compilation errors** - Check that your code compiles locally with `npm run build`
+1. **Peer dependency conflicts** - The build command uses `--legacy-peer-deps` to handle conflicts between @langchain/community and dotenv versions. This is normal and safe.
+2. **Missing environment variables** - Make sure all required env vars are set
+3. **Pinecone connection fails** - Verify your Pinecone API key and index name
+4. **TypeScript compilation errors** - Check that your code compiles locally with `npm run build`
 
 ### App Won't Start
 
