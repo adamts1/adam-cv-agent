@@ -31,7 +31,7 @@ A chat application that lets users ask questions about Adam's career and fun fac
    PORT=3001
    ```
 
-3. **Start ChromaDB:**
+3. **Start ChromaDB (v2 API):**
    ```bash
    docker run -d \
      -p 8000:8000 \
@@ -39,6 +39,8 @@ A chat application that lets users ask questions about Adam's career and fun fac
      --name chroma \
      chromadb/chroma:latest
    ```
+   
+   This uses the latest ChromaDB with v2 API support. The application is configured to use the modern host/port configuration for optimal compatibility.
 
 4. **Set up vector databases:**
    ```bash
@@ -110,16 +112,24 @@ adam-cv-agent/
 
 ## How It Works
 
-1. **Vector Setup**: The loaders split the markdown files into chunks, generate embeddings using OpenAI, and store them in ChromaDB collections.
+1. **Vector Setup**: The loaders split the markdown files into chunks, generate embeddings using OpenAI, and store them in ChromaDB collections using v2 API.
 
 2. **Chat Flow**:
    - User sends a message from the React frontend
    - Frontend makes a POST request to `/api/chat` with the message and topic
-   - Backend uses LangChain to retrieve relevant context from ChromaDB
+   - Backend uses LangChain to retrieve relevant context from ChromaDB (v2 API)
    - The context and user question are sent to OpenAI with a custom prompt
    - The AI-generated response is sent back to the frontend
 
 3. **RAG (Retrieval Augmented Generation)**: The system uses semantic search to find relevant information from the vector database, then uses that context to generate accurate, informed responses.
+
+## Technology Stack
+
+- **Frontend**: React with Vite
+- **Backend**: Express.js with TypeScript
+- **Vector Database**: ChromaDB (v2 API)
+- **AI/ML**: LangChain with OpenAI GPT-4o-mini
+- **Embeddings**: OpenAI text-embedding-ada-002
 
 ## License
 

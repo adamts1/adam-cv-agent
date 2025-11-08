@@ -30,7 +30,9 @@ async function setupFunFactsVector() {
 
   const vectorStore = await Chroma.fromDocuments(docs, embeddings, {
     collectionName: "adam_funfacts",
-    url: "http://localhost:8000", // same chroma instance
+    host: "localhost",
+    port: 8000,
+    ssl: false,
   });
 
   console.log("✅ Fun facts collection created and data embedded successfully.");

@@ -33,7 +33,9 @@ async function setupCareerVector() {
 
   const vectorStore = await Chroma.fromDocuments(docs, embeddings, {
     collectionName: "adam_career",
-    url: "http://localhost:8000", // make sure your ChromaDB Docker is running
+    host: "localhost",
+    port: 8000,
+    ssl: false,
   });
 
   console.log("✅ Career collection created and data embedded successfully.");

@@ -30,10 +30,12 @@ class ChatService {
     const collectionName = topic === "career" ? "adam_career" : "adam_funfacts";
     const topicName = topic === "career" ? "Adam's career, experience, and professional background" : "Adam's fun facts, personal interests, and personality";
 
-    // Connect to ChromaDB collection
+    // Connect to ChromaDB collection (v2 API)
     const vectorStore = new Chroma(this.embeddings, {
       collectionName,
-      url: "http://localhost:8000",
+      host: "localhost",
+      port: 8000,
+      ssl: false,
     });
 
     const retriever = vectorStore.asRetriever({ k: 4 });
