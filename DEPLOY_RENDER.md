@@ -39,8 +39,7 @@ This is the easiest method as it uses the included `render.yaml` configuration f
    
    - `OPENAI_API_KEY` - Your OpenAI API key
    - `PINECONE_API_KEY` - Your Pinecone API key
-   - `PINECONE_INDEX_NAME` - Your Pinecone index name (e.g., "adam-cv-agent")
-   - `PINECONE_ENVIRONMENT` - Your Pinecone environment (e.g., "us-east-1-aws")
+   - `PINECONE_INDEX` - Your Pinecone index name (e.g., "adam-cv-agent")
    
    **Note**: The `NODE_ENV` and `PORT` are already configured in the render.yaml.
 
@@ -86,11 +85,9 @@ If you prefer to configure manually:
    | Key | Value | Notes |
    |-----|-------|-------|
    | `NODE_ENV` | `production` | Required |
-   | `PORT` | Auto-assigned by Render | Leave empty, Render will set this |
    | `OPENAI_API_KEY` | Your OpenAI key | Required |
    | `PINECONE_API_KEY` | Your Pinecone key | Required |
-   | `PINECONE_INDEX_NAME` | Your index name | Required |
-   | `PINECONE_ENVIRONMENT` | Your Pinecone env | Required |
+   | `PINECONE_INDEX` | Your index name | Required |
 
 4. **Select Plan**
    - Choose the Free plan to start (or a paid plan for better performance)
