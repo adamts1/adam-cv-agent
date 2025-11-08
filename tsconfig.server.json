@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ES2020",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "noEmit": false,
+    "allowImportingTsExtensions": false,
+    "declaration": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true
+  },
+  "include": [
+    "src/server.ts",
+    "src/routes/**/*",
+    "src/services/**/*"
+  ],
+  "exclude": ["node_modules", "dist", "src/**/*.tsx", "src/**/*.jsx", "src/components", "src/App.tsx", "src/main.tsx"]
+}
+

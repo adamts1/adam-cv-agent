@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: adam-cv-agent
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build && npm run setup:all
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: adam-cv-agent
+          property: port
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: PINECONE_API_KEY
+        sync: false
+      - key: PINECONE_INDEX_NAME
+        sync: false
+      - key: PINECONE_ENVIRONMENT
+        sync: false
+
