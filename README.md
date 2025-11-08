@@ -1,46 +1,53 @@
 # Adam CV Agent
 
-A chat application that lets users ask questions about Adam's career and fun facts, powered by ChromaDB, LangChain, and OpenAI.
+A chat application that lets users ask questions about Adam's career and fun facts, powered by Pinecone, LangChain, and OpenAI.
 
 ## Features
 
 - 💼 Chat about career, experience, and professional background
 - 🎉 Chat about fun facts and personality
 - 🤖 Powered by OpenAI GPT with RAG (Retrieval Augmented Generation)
-- 💾 Uses ChromaDB for vector storage
+- 💾 Uses Pinecone for cloud-based vector storage
 - ⚛️ Modern React frontend with Vite
 - 🚀 Express backend API
 
 ## Prerequisites
 
 - Node.js (v18 or higher)
-- Docker (for ChromaDB)
 - OpenAI API key
+- Pinecone account and API key (get one at [https://app.pinecone.io/](https://app.pinecone.io/))
 
 ## Setup
 
 1. **Install dependencies:**
    ```bash
-   npm install
+   npm install --legacy-peer-deps
    ```
 
-2. **Set up environment variables:**
+2. **Set up Pinecone:**
+   - Sign up for a free account at [https://app.pinecone.io/](https://app.pinecone.io/)
+   - Create a new index with the following settings:
+     - Dimensions: **1536** (for OpenAI's text-embedding-ada-002)
+     - Metric: **cosine**
+     - Pod type: **Starter** (free tier)
+   - Get your API key from the Pinecone console
+
+3. **Set up environment variables:**
    Create a `.env` file in the root directory:
    ```
    OPENAI_API_KEY=your_openai_api_key_here
+   PINECONE_API_KEY=your_pinecone_api_key_here
+   PINECONE_INDEX=your_pinecone_index_name_here
    PORT=3001
    ```
-
-3. **Start ChromaDB (v2 API):**
-   ```bash
-   docker run -d \
-     -p 8000:8000 \
-     -v chroma-data:/chroma/chroma \
-     --name chroma \
-     chromadb/chroma:latest
-   ```
    
-   This uses the latest ChromaDB with v2 API support. The application is configured to use the modern host/port configuration for optimal compatibility.
+   Example:
+   ```
+   OPENAI_API_KEY=sk-...
+   PINECONE_API_KEY=pcsk_...
+   PINECONE_INDEX=adam-cv-agent
+   PORT=3001
+   ```
 
 4. **Set up vector databases:**
    ```bash
@@ -84,6 +91,26 @@ A chat application that lets users ask questions about Adam's career and fun fac
 - `npm run setup:career` - Set up career vector database
 - `npm run setup:funfacts` - Set up fun facts vector database
 - `npm run setup:all` - Set up both vector databases
+- `npm run test:pinecone` - Test Pinecone connection and show stats
+
+## Debugging
+
+If you're having issues with data not being stored in Pinecone:
+
+1. **Run the connection test:**
+   ```bash
+   npm run test:pinecone
+   ```
+   This will verify your configuration and show detailed index statistics.
+
+2. **Check the detailed logs** when running setup scripts:
+   ```bash
+   npm run setup:all
+   ```
+   The scripts now include comprehensive logging showing before/after vector counts.
+
+3. **See the full debugging guide:**
+   Check `DEBUG_GUIDE.md` for detailed troubleshooting steps and common issues.
 
 ## Project Structure
 
@@ -112,12 +139,12 @@ adam-cv-agent/
 
 ## How It Works
 
-1. **Vector Setup**: The loaders split the markdown files into chunks, generate embeddings using OpenAI, and store them in ChromaDB collections using v2 API.
+1. **Vector Setup**: The loaders split the markdown files into chunks, generate embeddings using OpenAI, and store them in Pinecone namespaces (adam_career and adam_funfacts).
 
 2. **Chat Flow**:
    - User sends a message from the React frontend
    - Frontend makes a POST request to `/api/chat` with the message and topic
-   - Backend uses LangChain to retrieve relevant context from ChromaDB (v2 API)
+   - Backend uses LangChain to retrieve relevant context from Pinecone
    - The context and user question are sent to OpenAI with a custom prompt
    - The AI-generated response is sent back to the frontend
 
@@ -127,7 +154,7 @@ adam-cv-agent/
 
 - **Frontend**: React with Vite
 - **Backend**: Express.js with TypeScript
-- **Vector Database**: ChromaDB (v2 API)
+- **Vector Database**: Pinecone (cloud-based)
 - **AI/ML**: LangChain with OpenAI GPT-4o-mini
 - **Embeddings**: OpenAI text-embedding-ada-002
 

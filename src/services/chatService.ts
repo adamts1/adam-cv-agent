@@ -1,5 +1,6 @@
 import "dotenv/config";
-import { Chroma } from "@langchain/community/vectorstores/chroma";
+import { PineconeStore } from "@langchain/pinecone";
+import { Pinecone } from "@pinecone-database/pinecone";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
@@ -8,10 +9,18 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 class ChatService {
   private embeddings: OpenAIEmbeddings;
   private llm: ChatOpenAI;
+  private pinecone: Pinecone;
 
   constructor() {
     this.embeddings = new OpenAIEmbeddings(
-      process.env.OPENAI_API_KEY ? { apiKey: process.env.OPENAI_API_KEY } : {}
+      process.env.OPENAI_API_KEY ? { 
+        apiKey: process.env.OPENAI_API_KEY,
+        modelName: "text-embedding-3-small",
+        dimensions: 1024, // Match Pinecone index dimension
+      } : {
+        modelName: "text-embedding-3-small",
+        dimensions: 1024,
+      }
     );
 
     const apiKey = process.env.OPENAI_API_KEY;
@@ -24,18 +33,23 @@ class ChatService {
       temperature: 0.7,
       apiKey,
     });
+
+    // Initialize Pinecone
+    this.pinecone = new Pinecone({
+      apiKey: process.env.PINECONE_API_KEY || "",
+    });
   }
 
   async chat(message: string, topic: "career" | "funfacts"): Promise<string> {
-    const collectionName = topic === "career" ? "adam_career" : "adam_funfacts";
+    const namespace = topic === "career" ? "adam_career" : "adam_funfacts";
     const topicName = topic === "career" ? "Adam's career, experience, and professional background" : "Adam's fun facts, personal interests, and personality";
 
-    // Connect to ChromaDB collection (v2 API)
-    const vectorStore = new Chroma(this.embeddings, {
-      collectionName,
-      host: "localhost",
-      port: 8000,
-      ssl: false,
+    // Connect to Pinecone index
+    const pineconeIndex = this.pinecone.Index(process.env.PINECONE_INDEX || "");
+
+    const vectorStore = await PineconeStore.fromExistingIndex(this.embeddings, {
+      pineconeIndex,
+      namespace,
     });
 
     const retriever = vectorStore.asRetriever({ k: 4 });
